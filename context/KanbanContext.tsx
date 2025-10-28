@@ -1,21 +1,14 @@
 'use client'
-import { IBoard } from "@/types/Kanban.types";
+import { IBoard, KanbanContextType, KanbanProviderProps } from "@/types/Kanban.types";
 import { INITIAL_BOARD_DATA } from "@/utils/constants";
 import {
   createContext,
-  ReactNode,
   useCallback,
   useContext,
   useState,
 } from "react";
 
-interface KanbanContextType {
-  board: IBoard;
-  updateBoardTitle: (title: string) => void;
-}
-interface KanbanProviderProps {
-  children: ReactNode;
-}
+
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
 
@@ -35,6 +28,8 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
 
   const value: KanbanContextType = {
     board,
+      moveCard,
+    reorderLists
     updateBoardTitle,
   };
   return (
