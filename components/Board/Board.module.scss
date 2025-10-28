@@ -1,0 +1,11 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.boardContainer {
+  background-color: $body-background;
+  position: relative;
+  @include flex-column;
+  min-height: 100vh;
+  padding: 1rem 0px 0px;
+  transition: background-color 0.2s ease-in;
+}
