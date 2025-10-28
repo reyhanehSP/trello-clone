@@ -1,13 +1,11 @@
 "use client";
-import { IBoard, KanbanContextType, KanbanProviderProps } from "@/types/Kanban.types";
-import { INITIAL_BOARD_DATA } from "@/utils/constants";
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useState,
-} from "react";
-
+  IBoard,
+  KanbanContextType,
+  KanbanProviderProps,
+} from "@/types/Kanban.types";
+import { INITIAL_BOARD_DATA } from "@/utils/constants";
+import { createContext, useCallback, useContext, useState } from "react";
 
 // create KanbanContext
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -19,10 +17,9 @@ export const useKanban = () => {
   return context;
 };
 
-
 export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
   const [board, setBoard] = useState<IBoard>(INITIAL_BOARD_DATA);
-
+  const [activeMenuListId, setActiveMenuListId] = useState<string | null>(null);
   // Update board title
   const updateBoardTitle = useCallback((title: string) => {
     setBoard((prev) => ({ ...prev, title }));
@@ -42,6 +39,8 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
     board,
     updateBoardTitle,
     updateListTitle,
+    activeMenuListId,
+    setActiveMenuListId,
   };
   return (
     <KanbanContext.Provider value={value}>{children}</KanbanContext.Provider>
