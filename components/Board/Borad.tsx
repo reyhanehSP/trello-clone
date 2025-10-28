@@ -34,18 +34,13 @@ export const Board: React.FC = () => {
           />
         ) : (
           <h1 onClick={() => setIsEditingTitle(true)}>{board.title}</h1>
-        )}
-
-               {/* Board Lists */}
-      
+              )}
+              </div>
+        {/* Board Lists */}
         {board.lists.map((list) => (
-          <List
-            key={list.id}
-            list={list}
-          />
+          <List key={list.id} list={list} />
         ))}
-                 
-      </div>
+   
     </div>
   );
 };
