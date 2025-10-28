@@ -157,6 +157,12 @@ export const useList= ({
     setSelectedCard(card);
   };
 
+  const handleCardTitleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setNewCardTitle(e.target.value);
+  };
+
   const handleCloseCardModal = () => {
     setSelectedCard(null);
   };
@@ -192,7 +198,7 @@ export const useList= ({
       startAdd: handleStartAddCard,
       add: handleAddCard,
       cancel: handleCancelAddCard,
-      handleChange: handleNewCardTitleChange,
+      handleChange: handleCardTitleChange,
       handleKeyDown: handleCardKeyDown,
     },
     // Menu

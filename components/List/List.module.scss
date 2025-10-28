@@ -87,9 +87,8 @@
   }
 }
 .actionTitle {
-  display: flex;
+  @include flex-between;
   -webkit-box-pack: justify;
-  justify-content: space-between;
   -webkit-box-align: center;
   align-items: center;
   padding: 0.4rem;
@@ -132,10 +131,6 @@
   font-size: 13px;
 }
 
-.listFooter {
-  padding: 8px;
-}
-
 .addCardBtn {
   width: 100%;
   text-align: left;
@@ -155,7 +150,7 @@
 }
 
 .addCardForm {
-  padding: 4px 0;
+  padding: .5rem;
 }
 
 .addCardActions {
@@ -165,17 +160,18 @@
 }
 .actionsMenu {
   position: absolute;
-  top: 20%;
-  right: -50%;
+  top: 30%;
+  left: calc(100% - 2rem);
   margin-top: 4px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-  min-width: 200px;
+  width: 17rem;
   z-index: 100;
-  padding: 8px 0;
 }
-
+.actionBody {
+  padding: 0.5rem 0px;
+}
 .actionsMenuTitle {
   font-size: 14px;
   font-weight: 600;
@@ -194,12 +190,15 @@
   border: none;
   text-align: left;
   cursor: pointer;
+  padding: 0.3rem 0.75rem;
+  font-weight: 700;
   font-size: 14px;
   color: #172b4d;
   transition: background 0.2s;
 
-  &:hover:not(:disabled) {
-    background: #f4f5f7;
+  &:hover {
+    color: rgb(255, 255, 255);
+    background: rgb(46, 126, 175);
   }
 
   &:disabled {
@@ -272,22 +271,19 @@
 }
 
 .confirmContent {
-  padding: 16px;
+  padding: 0.5rem;
 }
 
 .confirmContent p {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.4;
-  color: #555;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: rgb(64, 66, 75);
 }
 
 .deleteConfirmButton {
-  width: 100%;
   padding: 8px 16px;
   margin: 12px 16px 16px 16px;
-  width: calc(100% - 32px);
-  background-color: #d32f2f;
+  background-color: $danger-color;
   color: white;
   border: none;
   border-radius: 4px;
@@ -295,8 +291,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
-}
-
-.deleteConfirmButton:hover {
-  background-color: #b71c1c;
+  &:hover {
+    background-color: $danger-hover;
+  }
 }

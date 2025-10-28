@@ -70,7 +70,7 @@ export const List: React.FC<ListProps> = ({
               >
                 ←
               </button>
-              <span className={styles.confirmTitle}>List actions</span>
+              <span className={styles.confirmTitle}> Delete all cards</span>
               <button
                 className={styles.closeButton}
                 onClick={menu.handleCloseMenu}
@@ -80,18 +80,15 @@ export const List: React.FC<ListProps> = ({
               </button>
             </div>
             <div className={styles.confirmContent}>
-              <p>
-                All actions will be removed from the activity feed and you won't
-                be able to re-open the list. There is no undo.
-              </p>
+              <p>This will remove all the cards in this list from the board.</p>
+              <button
+                className={styles.deleteConfirmButton}
+                onClick={menu.handleDeleteAllCards}
+                type="button"
+              >
+                Delete all cards
+              </button>
             </div>
-            <button
-              className={styles.deleteConfirmButton}
-              onClick={menu.handleDeleteAllCards}
-              type="button"
-            >
-              Delete all cards
-            </button>
           </>
         );
 
@@ -117,18 +114,17 @@ export const List: React.FC<ListProps> = ({
             </div>
             <div className={styles.confirmContent}>
               <p>
-                This will permanently delete all {cards.length} card
-                {cards.length !== 1 ? "s" : ""} from this list. There is no
-                undo.
+                All actions will be removed from the activity feed and you won’t
+                be able to re-open the list. There is no undo.
               </p>
+              <button
+                className={styles.deleteConfirmButton}
+                onClick={menu.handleDeleteList}
+                type="button"
+              >
+                Delete list
+              </button>
             </div>
-            <button
-              className={styles.deleteConfirmButton}
-              onClick={menu.handleDeleteList}
-              type="button"
-            >
-              Delete list
-            </button>
           </>
         );
 
@@ -140,21 +136,22 @@ export const List: React.FC<ListProps> = ({
               <h3>List Actions</h3>
               <button onClick={onToggleActionsMenu}>×</button>
             </div>
-            <button
-              className={styles.actionsMenuItem}
-              onClick={() => menu.setState("Delete List")}
-              type="button"
-            >
-              Delete List
-            </button>
-            <button
-              className={styles.actionsMenuItem}
-              onClick={() => menu.setState("Delete All Cards")}
-              type="button"
-              disabled={cards.length === 0}
-            >
-              Delete All Cards
-            </button>
+                <div className={styles.actionBody}>
+              <button
+                className={styles.actionsMenuItem}
+                onClick={() => menu.setState("Delete List")}
+                type="button"
+              >
+                Delete List
+              </button>
+              <button
+                className={styles.actionsMenuItem}
+                onClick={() => menu.setState("Delete All Cards")}
+                type="button"
+              >
+                Delete All Cards
+              </button>
+            </div>
           </>
         );
     }
@@ -247,11 +244,9 @@ export const List: React.FC<ListProps> = ({
               placeholder="Enter card title..."
               autoFocus
             />
+         
             <div className={styles.addCardActions}>
-              <Button
-                onClick={cardAdding.add}
-                type="button"
-              >
+              <Button onClick={cardAdding.add} type="button">
                 Craete card
               </Button>
               <Button
