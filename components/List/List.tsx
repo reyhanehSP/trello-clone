@@ -1,35 +1,71 @@
+// src/components/List/List.tsx
 "use client";
-import { ListProps } from "@/types/Kanban.types";
-import { Input } from "../UI/Input";
+import React from "react";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { Card } from "@/components/Card/Card";
+import { CardModal } from "@/components/Card/CardModal";
+import { Input } from "@/components/UI/Input";
+import { Button } from "@/components/UI/Button";
 import styles from "./List.module.scss";
+import { IList } from "@/types/Kanban.types";
 import { useList } from "@/hooks/useList";
 
-export const List: React.FC<ListProps> = ({ list }) => {
-  const {
-      title,
-      cards,
-      menuRef,
-    setTitle,
-    handleTitleKeyDown,
-    handleSaveTitle,
-    onToggleActionsMenu,
-    menuState,
-    setMenuState,
-    handleDeleteList,
-      handleBackToMenu,
-    activeMenuListId,
-    handleDeleteAllCards,
-  } = useList(list);
+interface ListProps {
+  list: IList;
+  onUpdateTitle: (title: string) => void;
+  onDelete: () => void;
+  onAddCard: (title: string) => void;
+  onUpdateCard: (cardId: string, title: string) => void;
+  onAddComment: (cardId: string, text: string) => void;
+  deleteAllCards: (listId: string) => void;
+  showActionsMenu: boolean;
+  onToggleActionsMenu: () => void;
+}
 
+export const List: React.FC<ListProps> = ({
+  list,
+  onUpdateTitle,
+  onDelete,
+  onAddCard,
+  onUpdateCard,
+  onAddComment,
+  deleteAllCards,
+  showActionsMenu,
+  onToggleActionsMenu,
+}) => {
+  if (!list) {
+    console.error("List component received undefined list");
+    return null;
+  }
+
+  const cards = list.cards || [];
+  const cardIds = cards.map((card) => card?.id || "").filter(Boolean);
+
+  const { dragProps, titleEditing, cardAdding, menu, cardModal } = useList(
+    {
+      list,
+      onUpdateTitle,
+      onDelete,
+      onAddCard,
+      deleteAllCards,
+      showActionsMenu,
+      onToggleActionsMenu,
+    }
+  );
+
+  // ===== MENU CONTENT RENDERER =====
   const renderMenuContent = () => {
-    switch (menuState) {
+    switch (menu.state) {
       case "Delete All Cards":
         return (
           <>
             <div className={styles.confirmHeader}>
               <button
                 className={styles.backButton}
-                onClick={handleBackToMenu}
+                onClick={menu.handleBackToMenu}
                 type="button"
               >
                 ←
@@ -37,10 +73,7 @@ export const List: React.FC<ListProps> = ({ list }) => {
               <span className={styles.confirmTitle}>List actions</span>
               <button
                 className={styles.closeButton}
-                onClick={() => {
-                  setMenuState("normal");
-                  onToggleActionsMenu();
-                }}
+                onClick={menu.handleCloseMenu}
                 type="button"
               >
                 ✕
@@ -54,10 +87,10 @@ export const List: React.FC<ListProps> = ({ list }) => {
             </div>
             <button
               className={styles.deleteConfirmButton}
-              onClick={handleDeleteList}
+              onClick={menu.handleDeleteAllCards}
               type="button"
             >
-              Delete list
+              Delete all cards
             </button>
           </>
         );
@@ -68,7 +101,7 @@ export const List: React.FC<ListProps> = ({ list }) => {
             <div className={styles.confirmHeader}>
               <button
                 className={styles.backButton}
-                onClick={handleBackToMenu}
+                onClick={menu.handleBackToMenu}
                 type="button"
               >
                 ←
@@ -76,10 +109,7 @@ export const List: React.FC<ListProps> = ({ list }) => {
               <span className={styles.confirmTitle}>Delete List</span>
               <button
                 className={styles.closeButton}
-                onClick={() => {
-                  setMenuState("normal");
-                  onToggleActionsMenu();
-                }}
+                onClick={menu.handleCloseMenu}
                 type="button"
               >
                 ✕
@@ -94,10 +124,10 @@ export const List: React.FC<ListProps> = ({ list }) => {
             </div>
             <button
               className={styles.deleteConfirmButton}
-              onClick={handleDeleteAllCards}
+              onClick={menu.handleDeleteList}
               type="button"
             >
-              Delete all cards
+              Delete list
             </button>
           </>
         );
@@ -108,19 +138,18 @@ export const List: React.FC<ListProps> = ({ list }) => {
             <div className={styles.actionTitle}>
               <button></button>
               <h3>List Actions</h3>
-              <button onClick={() => onToggleActionsMenu()}>×</button>
+              <button onClick={onToggleActionsMenu}>×</button>
             </div>
             <button
               className={styles.actionsMenuItem}
-              onClick={() => setMenuState("Delete List")}
+              onClick={() => menu.setState("Delete List")}
               type="button"
             >
               Delete List
             </button>
-
             <button
               className={styles.actionsMenuItem}
-              onClick={() => setMenuState("Delete All Cards")}
+              onClick={() => menu.setState("Delete All Cards")}
               type="button"
               disabled={cards.length === 0}
             >
@@ -132,42 +161,134 @@ export const List: React.FC<ListProps> = ({ list }) => {
   };
 
   return (
-    <div className={styles.list}>
-      <Input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        onBlur={handleSaveTitle}
-        onKeyDown={handleTitleKeyDown}
-        autoFocus
-        className={styles.listTitleInput}
-      />
-      <button
-        className={styles.listDeleteBtn}
-        onClick={onToggleActionsMenu}
-        title="Delete list"
-        type="button"
+    <div ref={dragProps.ref} style={dragProps.style} className={styles.list}>
+      {/* LIST HEADER */}
+      <div
+        className={styles.listHeader}
+        {...dragProps.attributes}
+        {...dragProps.listeners}
       >
-        <svg
-          aria-hidden="true"
-          focusable="false"
-          data-prefix="fas"
-          data-icon="ellipsis-h"
-          className="svg-inline--fa fa-ellipsis-h fa-w-16 fa-null fa-rotate-null fa-pull-null "
-          role="img"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 512 512"
+        {titleEditing.isEditing ? (
+          <Input
+            value={titleEditing.title}
+            onChange={titleEditing.handleChange}
+            onBlur={titleEditing.save}
+            onKeyDown={titleEditing.handleKeyDown}
+            autoFocus
+            className={styles.listTitleInput}
+          />
+        ) : (
+          <h2 className={styles.listTitle} onClick={titleEditing.startEdit}>
+            {list.title || "Untitled List"}
+          </h2>
+        )}
+
+        <button
+          className={styles.listDeleteBtn}
+          onClick={onToggleActionsMenu}
+          title="List actions"
+          type="button"
         >
-          <path
-            fill="currentColor"
-            d="M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z"
-          ></path>
-        </svg>
-        {(activeMenuListId === list.id) && (
-          <div ref={menuRef} className={styles.actionsMenu}>
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            data-prefix="fas"
+            data-icon="ellipsis-h"
+            className="svg-inline--fa fa-ellipsis-h"
+            role="img"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+          >
+            <path
+              fill="currentColor"
+              d="M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z"
+            ></path>
+          </svg>
+        </button>
+
+        {showActionsMenu && (
+          <div ref={menu.ref} className={styles.actionsMenu}>
             {renderMenuContent()}
           </div>
         )}
-      </button>
+      </div>
+
+      {/* LIST CARDS */}
+      <div className={styles.listCards}>
+        <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>
+          {cards.length > 0 &&
+            cards.map((card) => {
+              if (!card || !card.id) {
+                console.warn("Invalid card found in list", card);
+                return null;
+              }
+
+              return (
+                <Card
+                  key={card.id}
+                  card={card}
+                  listId={list.id}
+                  onUpdateTitle={(newTitle) => onUpdateCard(card.id, newTitle)}
+                  onOpenModal={() => cardModal.openModal(card)}
+                />
+              );
+            })}
+        </SortableContext>
+      </div>
+
+      {/* LIST FOOTER */}
+      <div className={styles.listFooter}>
+        {cardAdding.isAdding ? (
+          <div className={styles.addCardForm}>
+            <Input
+              value={cardAdding.newCardTitle}
+              onChange={cardAdding.handleChange}
+              onKeyDown={cardAdding.handleKeyDown}
+              placeholder="Enter card title..."
+              autoFocus
+            />
+            <div className={styles.addCardActions}>
+              <Button
+                onClick={cardAdding.add}
+                type="button"
+              >
+                Craete card
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={cardAdding.cancel}
+                type="button"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <button
+            className={styles.addCardBtn}
+            onClick={cardAdding.startAdd}
+            type="button"
+          >
+            + Add another card
+          </button>
+        )}
+      </div>
+
+      {/* CARD MODAL */}
+      {cardModal.selectedCard && (
+        <CardModal
+          card={cardModal.selectedCard}
+          isOpen={!!cardModal.selectedCard}
+          onClose={cardModal.closeModal}
+          onUpdateTitle={(newTitle) => {
+            onUpdateCard(cardModal.selectedCard!.id, newTitle);
+            cardModal.updateSelectedCard(newTitle);
+          }}
+          onAddComment={(text) => {
+            onAddComment(cardModal.selectedCard!.id, text);
+          }}
+        />
+      )}
     </div>
   );
 };

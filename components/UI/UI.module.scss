@@ -1,0 +1,82 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+// Button styles
+.button {
+  @include button-base;
+  &--primary {
+    @include button-primary;
+     &:hover {
+      background-color: $primary-hover;
+    }
+  }
+
+  &--secondary {
+    @include button-secondary;
+  }
+
+  &--danger {
+    @include button-base;
+    background-color: #cf513d;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: #b04632;
+    }
+  }
+}
+
+// Input styles
+.input {
+  @include input-base;
+}
+
+// Modal styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal;
+  padding: $spacing-lg;
+}
+
+.modalContent {
+  background-color: $modal-background;
+  border-radius: $border-radius-md;
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  padding: 1rem;
+  border-radius: 0.3rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: $shadow-lg;
+
+  @include custom-scrollbar;
+}
+
+.modalHeader {
+  @include flex-between;
+  h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: rgb(107, 119, 140);
+  &:hover {
+    color: rgb(23, 43, 77);
+  }
+}
+

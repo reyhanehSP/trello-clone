@@ -1,0 +1,102 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.card {
+  background-color: white;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  cursor: grab;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.1s;
+  will-change: transform;
+  min-height: 36px;
+  &[data-dragging="true"] {
+    position: fixed !important;
+    width: 240px;
+    pointer-events: none;
+    transform: translate3d(var(--translate-x, 0px), var(--translate-y, 0px), 0);
+  }
+  &:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+
+    .cardActions {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardTitle {
+  font-size: 14px;
+  color: #172b4d;
+  line-height: 1.4;
+  word-break: break-word;
+  margin: 0;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.commentCount {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b778c;
+}
+
+.cardActions {
+  display: flex;
+  -webkit-box-pack: end;
+  justify-content: flex-end;
+
+  button {
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.2rem;
+    background-color: rgb(223, 225, 230);
+    color: rgb(23, 43, 77);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in;
+  }
+}
+
+.cardDeleteBtn {
+  color: #eb5a46;
+  font-size: 16px;
+
+  &:hover {
+    background: #eb5a46;
+    color: white;
+  }
+}
+
+.cardInput {
+  width: 100%;
+  font-size: 14px;
+  padding: 4px;
+  border: 2px solid #026aa7;
+  border-radius: 3px;
+  outline: none;
+  resize: vertical;
+  min-height: 60px;
+}

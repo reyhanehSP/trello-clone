@@ -50,6 +50,7 @@ export interface KanbanContextType {
   activeMenuListId: string | null;
   setActiveMenuListId: (listId: string | null) => void;
   reorderLists: (startIndex: number, endIndex: number) => void;
+  addComment: (listId: string, cardId: string, text: string) => void;
 }
 export interface KanbanProviderProps {
   children: ReactNode;

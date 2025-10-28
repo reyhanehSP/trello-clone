@@ -23,7 +23,7 @@
 }
 // Button mixins
 @mixin button-base {
-  padding: $spacing-sm $spacing-md;
+  padding: $spacing-sm;
   border: none;
   border-radius: $border-radius-sm;
   cursor: pointer;

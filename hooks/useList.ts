@@ -1,48 +1,86 @@
-"use client";
-import { useKanban } from "@/context/KanbanContext";
+// src/hooks/useListLogic.ts
+import { useState, useRef, useEffect } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+import { useClickOutside } from "@/hooks/useClickOutside";
 import { ICard, IList } from "@/types/Kanban.types";
-import { useCallback, useRef, useState } from "react";
-import { useClickOutside } from "./useClickOutside";
 
 type MenuState = "normal" | "Delete List" | "Delete All Cards";
 
-export const useList = (list: IList) => {
+interface UseListLogicProps {
+  list: IList;
+  onUpdateTitle: (title: string) => void;
+  onDelete: () => void;
+  onAddCard: (title: string) => void;
+  deleteAllCards: (listId: string) => void;
+  showActionsMenu: boolean;
+  onToggleActionsMenu: () => void;
+}
+
+export const useList= ({
+  list,
+  onUpdateTitle,
+  onDelete,
+  onAddCard,
+  deleteAllCards,
+  showActionsMenu,
+  onToggleActionsMenu,
+}: UseListLogicProps) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // ===== DND-KIT SORTABLE =====
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: list.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  // ===== TITLE EDITING STATE =====
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [title, setTitle] = useState(list.title || "");
-  const cards: ICard[] = list.cards || [];
-  const cardIds = cards.map((card) => card?.id || "").filter(Boolean);
 
-  const menuRef = useRef<HTMLDivElement>(null);
-  const {
-    updateListTitle,
-    activeMenuListId,
-    setActiveMenuListId,
-    deleteList,
-    deleteAllCards,
-  } = useKanban();
+  // ===== CARD ADDING STATE =====
+  const [isAddingCard, setIsAddingCard] = useState(false);
+  const [newCardTitle, setNewCardTitle] = useState("");
+
+  // ===== CARD MODAL STATE =====
+  const [selectedCard, setSelectedCard] = useState<ICard | null>(null);
+
+  // ===== MENU STATE =====
   const [menuState, setMenuState] = useState<MenuState>("normal");
-  const onToggleActionsMenu = useCallback(() => {
-    setActiveMenuListId(activeMenuListId === list.id ? null : list.id);
-  }, [activeMenuListId, list.id]);
 
+  // ===== SYNC TITLE WITH PROP =====
+  useEffect(() => {
+    setTitle(list.title || "");
+  }, [list.title]);
+
+  // ===== CLICK OUTSIDE HANDLER =====
   useClickOutside(menuRef, () => {
-    if (activeMenuListId === list.id) {
-      setActiveMenuListId(activeMenuListId === list.id ? null : list.id);
+    if (showActionsMenu) {
+      onToggleActionsMenu();
     }
   });
-  const handleDeleteList = () => {
-    deleteList(list.id);
-    setMenuState("normal");
-    onToggleActionsMenu();
-  };
-  const handleSaveTitle = useCallback(() => {
+
+  // ===== TITLE HANDLERS =====
+  const handleSaveTitle = () => {
     if (title.trim()) {
-      updateListTitle(list.id, title.trim());
+      onUpdateTitle(title.trim());
+      setIsEditingTitle(false);
     } else {
       setTitle(list.title);
+      setIsEditingTitle(false);
     }
-    setIsEditingTitle(false);
-  }, [title, list.id, list.title, updateListTitle]);
+  };
 
   const handleTitleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -52,29 +90,127 @@ export const useList = (list: IList) => {
       setIsEditingTitle(false);
     }
   };
-  const handleBackToMenu = () => {
-    setMenuState("normal");
+
+  const handleStartEditTitle = () => {
+    setIsEditingTitle(true);
   };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  // ===== CARD HANDLERS =====
+  const handleAddCard = () => {
+    if (newCardTitle.trim()) {
+      onAddCard(newCardTitle.trim());
+      setNewCardTitle("");
+      setIsAddingCard(false);
+    }
+  };
+
+  const handleCardKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleAddCard();
+    } else if (e.key === "Escape") {
+      setNewCardTitle("");
+      setIsAddingCard(false);
+    }
+  };
+
+  const handleStartAddCard = () => {
+    setIsAddingCard(true);
+  };
+
+  const handleCancelAddCard = () => {
+    setNewCardTitle("");
+    setIsAddingCard(false);
+  };
+
+  const handleNewCardTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewCardTitle(e.target.value);
+  };
+
+  // ===== MENU HANDLERS =====
+  const handleDeleteList = () => {
+    onDelete();
+    setMenuState("normal");
+    onToggleActionsMenu();
+  };
+
   const handleDeleteAllCards = () => {
     deleteAllCards(list.id);
     setMenuState("normal");
     onToggleActionsMenu();
   };
+
+  const handleBackToMenu = () => {
+    setMenuState("normal");
+  };
+
+  const handleCloseMenu = () => {
+    setMenuState("normal");
+    onToggleActionsMenu();
+  };
+
+  // ===== CARD MODAL HANDLERS =====
+  const handleOpenCardModal = (card: ICard) => {
+    setSelectedCard(card);
+  };
+
+  const handleCloseCardModal = () => {
+    setSelectedCard(null);
+  };
+
+  const handleUpdateSelectedCard = (newTitle: string) => {
+    if (selectedCard) {
+      setSelectedCard({ ...selectedCard, title: newTitle });
+    }
+  };
+
   return {
-    cards,
-    menuRef,
-    isEditingTitle,
-    setIsEditingTitle,
-    title,
-    setTitle,
-    menuState,
-    handleBackToMenu,
-    handleDeleteAllCards,
-    setMenuState,
-    handleDeleteList,
-    handleSaveTitle,
-    handleTitleKeyDown,
-    activeMenuListId,
-    onToggleActionsMenu,
+    // DND Props
+    dragProps: {
+      ref: setNodeRef,
+      style,
+      attributes,
+      listeners,
+      isDragging,
+    },
+    // Title Editing
+    titleEditing: {
+      isEditing: isEditingTitle,
+      title,
+      startEdit: handleStartEditTitle,
+      save: handleSaveTitle,
+      handleChange: handleTitleChange,
+      handleKeyDown: handleTitleKeyDown,
+    },
+    // Card Adding
+    cardAdding: {
+      isAdding: isAddingCard,
+      newCardTitle,
+      startAdd: handleStartAddCard,
+      add: handleAddCard,
+      cancel: handleCancelAddCard,
+      handleChange: handleNewCardTitleChange,
+      handleKeyDown: handleCardKeyDown,
+    },
+    // Menu
+    menu: {
+      ref: menuRef,
+      state: menuState,
+      setState: setMenuState,
+      handleDeleteList,
+      handleDeleteAllCards,
+      handleBackToMenu,
+      handleCloseMenu,
+    },
+    // Card Modal
+    cardModal: {
+      selectedCard,
+      openModal: handleOpenCardModal,
+      closeModal: handleCloseCardModal,
+      updateSelectedCard: handleUpdateSelectedCard,
+    },
   };
 };
