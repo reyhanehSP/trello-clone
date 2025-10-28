@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.scss";
 import { Inter } from "next/font/google";
 import { KanbanProvider } from "@/context/KanbanContext";
+import "./globals.scss";
 
 export const metadata: Metadata = {
   title: "Kanban Board",

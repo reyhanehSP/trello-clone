@@ -1,4 +1,3 @@
-
 // Flexbox helpers
 @mixin flex-center {
   display: flex;
@@ -17,6 +16,11 @@
   flex-direction: column;
 }
 
+@mixin text-ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 // Button mixins
 @mixin button-base {
   padding: $spacing-sm $spacing-md;
@@ -26,15 +30,15 @@
   font-size: 14px;
   font-weight: 500;
   transition: all $transition-fast;
-  
+
   &:hover {
     transform: translateY(-1px);
   }
-  
+
   &:active {
     transform: translateY(0);
   }
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -54,7 +58,7 @@
   @include button-base;
   background-color: $list-background;
   color: $secondary-color;
-  
+
   &:hover:not(:disabled) {
     background-color: darken($list-background, 5%);
   }
@@ -68,7 +72,7 @@
   padding: $spacing-sm;
   cursor: pointer;
   transition: all $transition-fast;
-  
+
   &:hover {
     box-shadow: $shadow-md;
   }
@@ -80,15 +84,15 @@
     width: 8px;
     height: 8px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
-    
+
     &:hover {
       background: rgba(0, 0, 0, 0.3);
     }
@@ -117,7 +121,7 @@
   font-size: 14px;
   outline: none;
   transition: all $transition-fast;
-  
+
   &:focus {
     border-color: $secondary-color;
     box-shadow: 0 0 0 1px $secondary-color;

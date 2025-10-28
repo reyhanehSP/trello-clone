@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface IBoard {
   id: string;
   title: string;
@@ -28,3 +30,16 @@ export interface IList {
   createdAt?: string;
   updatedAt?: string;
 }
+export interface ListProps {
+  list: IList;
+}
+
+export interface KanbanContextType {
+  board: IBoard;
+  updateBoardTitle: (title: string) => void;
+  updateListTitle: (listId: string, title: string) => void;
+}
+export interface KanbanProviderProps {
+  children: ReactNode;
+}
+

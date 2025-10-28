@@ -1,0 +1,49 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.list {
+  position: relative;
+  @include flex-column;
+  flex-shrink: 0;
+  max-height: 83vh;
+  width: 16rem;
+  margin: 0px 0.5rem;
+  background-color: $list-background;
+  border-radius: $border-radius-sm;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.listHeader {
+  @include flex-between;
+  padding: 0.5rem 0.7rem 0rem 0.5rem;
+  cursor: grab;
+  min-height: 48px;
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.listTitle {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  @include text-ellipsis;
+  margin: 0;
+  border-radius: 4px;
+  cursor: text;
+  word-break: break-word;
+}
+
+.listTitleInput {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: white;
+  outline: none;
+}
