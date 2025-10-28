@@ -3,6 +3,7 @@ import { useBoard } from "@/hooks/useBoards";
 import styles from "./Board.module.scss";
 import { Input } from "../UI/Input";
 import { List } from "../List/List";
+
 export const Board: React.FC = () => {
   const {
     board,
@@ -35,12 +36,15 @@ export const Board: React.FC = () => {
           <h1 onClick={() => setIsEditingTitle(true)}>{board.title}</h1>
         )}
 
+               {/* Board Lists */}
+      
         {board.lists.map((list) => (
           <List
             key={list.id}
             list={list}
           />
         ))}
+                 
       </div>
     </div>
   );
