@@ -38,10 +38,16 @@ export interface KanbanContextType {
   board: IBoard;
   updateBoardTitle: (title: string) => void;
   updateListTitle: (listId: string, title: string) => void;
+  moveCard: (
+    sourceListId: string,
+    destListId: string,
+    sourceIndex: number,
+    destIndex: number
+  ) => void;
   activeMenuListId: string | null;
   setActiveMenuListId: (listId: string | null) => void;
+  reorderLists: (startIndex: number, endIndex: number) => void;
 }
 export interface KanbanProviderProps {
   children: ReactNode;
 }
-

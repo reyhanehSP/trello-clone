@@ -1,8 +1,14 @@
 "use client";
 import { useBoard } from "@/hooks/useBoards";
+import { DndContext, closestCorners } from "@dnd-kit/core";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import styles from "./Board.module.scss";
 import { Input } from "../UI/Input";
 import { List } from "../List/List";
+import { useKanbanDragDrop } from "@/hooks/useKanbanDragDrop";
 
 export const Board: React.FC = () => {
   const {
@@ -13,6 +19,8 @@ export const Board: React.FC = () => {
     setIsEditingTitle,
     handleSaveTitle,
   } = useBoard();
+  const { sensors, handleDragStart, handleDragOver, handleDragEnd } =
+    useKanbanDragDrop();
   return (
     <div className={styles.boardContainer}>
       {/* Board Header */}
@@ -34,13 +42,28 @@ export const Board: React.FC = () => {
           />
         ) : (
           <h1 onClick={() => setIsEditingTitle(true)}>{board.title}</h1>
-              )}
-              </div>
+        )}
         {/* Board Lists */}
-        {board.lists.map((list) => (
-          <List key={list.id} list={list} />
-        ))}
-   
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+        >
+          <div className={styles.boardLists}>
+            <SortableContext
+              items={board.lists.map((l) => l.id)}
+              strategy={horizontalListSortingStrategy}
+            >
+              {board.lists.map((list) => (
+                <List key={list.id} list={list} />
+              ))}
+            </SortableContext>
+            
+          </div>
+        </DndContext>
+      </div>
     </div>
   );
 };
