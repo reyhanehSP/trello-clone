@@ -1,0 +1,33 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.boardContainer {
+  position: relative;
+  @include flex-column;
+  min-height: 100vh;
+  padding: 1rem 0px 0px;
+  transition: background-color 0.2s ease-in;
+}
+.boardTitle {
+  margin-bottom: 1rem;
+  padding: 0px 1rem;
+
+  .boardTitleInput {
+    background-color: white;
+    color: $text-primary;
+    padding: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    max-width: calc(-9rem + 100vw);
+  }
+  h1 {
+    margin: 0px;
+    padding: 0.5rem;
+    font-size: 1.3rem;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}

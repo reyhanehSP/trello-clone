@@ -1,0 +1,129 @@
+
+// Flexbox helpers
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Button mixins
+@mixin button-base {
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all $transition-fast;
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $primary-color;
+  color: white;
+  &:hover:not(:disabled) {
+    background-color: $primary-hover;
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: $list-background;
+  color: $secondary-color;
+  
+  &:hover:not(:disabled) {
+    background-color: darken($list-background, 5%);
+  }
+}
+
+// Card styles
+@mixin card-base {
+  background-color: $card-background;
+  border-radius: $border-radius-sm;
+  box-shadow: $shadow-sm;
+  padding: $spacing-sm;
+  cursor: pointer;
+  transition: all $transition-fast;
+  
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+// Scrollbar
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+// Responsive
+@mixin mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+// Input styles
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-sm;
+  border: 2px solid transparent;
+  border-radius: $border-radius-sm;
+  font-size: 14px;
+  outline: none;
+  transition: all $transition-fast;
+  
+  &:focus {
+    border-color: $secondary-color;
+    box-shadow: 0 0 0 1px $secondary-color;
+  }
+}
+
+@mixin transition($property: all, $duration: 0.2s, $timing: ease-in) {
+  transition: $property $duration $timing;
+}
