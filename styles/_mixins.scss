@@ -49,9 +49,6 @@
   @include button-base;
   background-color: $primary-color;
   color: white;
-  &:hover:not(:disabled) {
-    background-color: $primary-hover;
-  }
 }
 
 @mixin button-secondary {
@@ -59,9 +56,6 @@
   background-color: $list-background;
   color: $secondary-color;
 
-  &:hover:not(:disabled) {
-    background-color: darken($list-background, 5%);
-  }
 }
 
 // Card styles
