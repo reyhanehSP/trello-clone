@@ -36,7 +36,10 @@ export interface ListProps {
 
 export interface KanbanContextType {
   board: IBoard;
+  addList: (title: string) => void;
+  deleteList: (listId: string) => void;
   updateBoardTitle: (title: string) => void;
+  deleteAllCards: (listId: string) => void;
   updateListTitle: (listId: string, title: string) => void;
   moveCard: (
     sourceListId: string,

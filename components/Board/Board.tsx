@@ -9,6 +9,7 @@ import styles from "./Board.module.scss";
 import { Input } from "../UI/Input";
 import { List } from "../List/List";
 import { useKanbanDragDrop } from "@/hooks/useKanbanDragDrop";
+import { Button } from "../UI/Button";
 
 export const Board: React.FC = () => {
   const {
@@ -18,6 +19,11 @@ export const Board: React.FC = () => {
     isEditingTitle,
     setIsEditingTitle,
     handleSaveTitle,
+    isAddingList,
+    setIsAddingList,
+    newListTitle,
+    setNewListTitle,
+    handleAddList,
   } = useBoard();
   const { sensors, handleDragStart, handleDragOver, handleDragEnd } =
     useKanbanDragDrop();
@@ -60,7 +66,44 @@ export const Board: React.FC = () => {
                 <List key={list.id} list={list} />
               ))}
             </SortableContext>
-            
+            {/* Add List Button */}
+            <div className={styles.addListContainer}>
+              {isAddingList ? (
+                <div className={styles.addListForm}>
+                  <Input
+                    value={newListTitle}
+                    onChange={(e) => setNewListTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleAddList();
+                      if (e.key === "Escape") setIsAddingList(false);
+                    }}
+                    placeholder="Enter list title..."
+                    autoFocus
+                  />
+                  <div className={styles.addListActions}>
+                    <Button
+                      onClick={handleAddList}
+                      disabled={!newListTitle.trim()}
+                    >
+                      Add List
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setIsAddingList(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  className={styles.addListBtn}
+                  onClick={() => setIsAddingList(true)}
+                >
+                  + Add another list
+                </button>
+              )}
+            </div>
           </div>
         </DndContext>
       </div>

@@ -3,10 +3,40 @@ $body-background: rgb(46, 126, 175);
 $secondary-color: rgb(64, 66, 75);
 $list-background: rgb(223, 225, 230);
 
+$border-color: rgba(9, 30, 66, 0.13);
+$shadow-color: rgba(9, 30, 66, 0.13);
+
 //text colors 
 $text-primary: rgb(64, 66, 75);
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 24px;
 
 // Border Radius
 $border-radius-sm: .2rem;
 $border-radius-md: 8px;
 $border-radius-lg: 12px;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-normal: 0.3s ease;
+
+
+
+// Shadows
+$shadow-sm: 0 1px 2px $shadow-color;
+$shadow-md: 0 1px 4px $shadow-color;
+$shadow-lg: 0 8px 16px $shadow-color;
+
+// Z-index
+$z-modal: 1000;
+$z-overlay: 999;
+$z-dropdown: 100;
+
+// Breakpoints
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;

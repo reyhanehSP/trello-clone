@@ -29,6 +29,19 @@
     @include text-ellipsis;
   }
 }
+.listWrapper {
+  flex-shrink: 0;
+}
+
+.addListContainer {
+  @include flex-column;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  width: 272px;
+  min-width: 272px;
+  flex-shrink: 0;
+}
 .boardLists {
   display: flex;
   align-items: flex-start;
@@ -39,4 +52,38 @@
   padding: 0px 1rem 1rem;
   overflow: auto;
   @include custom-scrollbar;
+}
+
+
+.addListBtn {
+  width: 100%;
+  padding: $spacing-sm;
+  background: none;
+  border: none;
+  text-align: left;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: $border-radius-sm;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.addListForm {
+  @include flex-column;
+  gap: $spacing-sm;
+}
+
+.addListActions {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.loading {
+  @include flex-center;
+  min-height: 100vh;
+  font-size: 18px;
+  color: white;
 }

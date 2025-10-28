@@ -1,11 +1,12 @@
 "use client";
 import {
   IBoard,
+  IList,
   KanbanContextType,
   KanbanProviderProps,
 } from "@/types/Kanban.types";
 import { INITIAL_BOARD_DATA } from "@/utils/constants";
-import { reorder } from "@/utils/helper";
+import { reorder, generateId } from "@/utils/helper";
 import { createContext, useCallback, useContext, useState } from "react";
 
 // create KanbanContext
@@ -35,7 +36,26 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
       ),
     }));
   }, []);
+  // Add new list
+  const addList = useCallback((title: string) => {
+    const newList: IList = {
+      id: generateId(),
+      title,
+      cards: [],
+    };
+    setBoard((prev) => ({
+      ...prev,
+      lists: [...prev.lists, newList],
+    }));
+  }, []);
 
+  // Delete list
+  const deleteList = useCallback((listId: string) => {
+    setBoard((prev) => ({
+      ...prev,
+      lists: prev.lists.filter((list) => list.id !== listId),
+    }));
+  }, []);
   // Reorder lists
   const reorderLists = useCallback((startIndex: number, endIndex: number) => {
     setBoard((prev) => ({
@@ -99,11 +119,25 @@ export const KanbanProvider: React.FC<KanbanProviderProps> = ({ children }) => {
     },
     []
   );
+  const deleteAllCards = useCallback((listId: string) => {
+    setBoard((prev) => {
+      if (!prev) return prev;
 
+      return {
+        ...prev,
+        lists: prev.lists.map((list) =>
+          list.id === listId ? { ...list, cards: [] } : list
+        ),
+      };
+    });
+  }, []);
   const value: KanbanContextType = {
     board,
+    addList,
     moveCard,
+    deleteList,
     reorderLists,
+    deleteAllCards,
     updateBoardTitle,
     updateListTitle,
     activeMenuListId,
