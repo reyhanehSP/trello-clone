@@ -26,8 +26,6 @@
     font-size: 1.3rem;
     color: rgb(255, 255, 255);
     font-weight: 600;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    @include text-ellipsis;
   }
 }

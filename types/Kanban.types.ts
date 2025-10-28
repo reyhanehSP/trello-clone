@@ -31,12 +31,13 @@ export interface IList {
   updatedAt?: string;
 }
 export interface ListProps {
-    list: IList;
-    
+  list: IList;
 }
+
 export interface KanbanContextType {
   board: IBoard;
   updateBoardTitle: (title: string) => void;
+  updateListTitle: (listId: string, title: string) => void;
   moveCard: (
     sourceListId: string,
     destListId: string,

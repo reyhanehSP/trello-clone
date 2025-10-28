@@ -1,14 +1,15 @@
 "use client";
 import { useBoard } from "@/hooks/useBoards";
-import styles from "./Board.module.scss";
-import { Input } from "../UI/Input";
-import { List } from "../List/List";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import styles from "./Board.module.scss";
+import { Input } from "../UI/Input";
+import { List } from "../List/List";
 import { useKanbanDragDrop } from "@/hooks/useKanbanDragDrop";
+
 export const Board: React.FC = () => {
   const {
     board,
@@ -42,7 +43,6 @@ export const Board: React.FC = () => {
         ) : (
           <h1 onClick={() => setIsEditingTitle(true)}>{board.title}</h1>
         )}
-
         {/* Board Lists */}
         <DndContext
           sensors={sensors}
